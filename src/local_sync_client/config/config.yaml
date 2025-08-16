@@ -1,0 +1,8 @@
+local_sync_client:
+  user:
+    name: "asier"
+    email: "asier@email.com"
+    key_location: "/path/to/key"
+    local_sotorage_paths:
+      - "/home/asier/Personal_cloud/local_storage_1"
+      - "/home/asier/Personal_cloud/local_storage_2"
