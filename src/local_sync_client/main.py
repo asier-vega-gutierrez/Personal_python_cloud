@@ -1,8 +1,6 @@
 
-from config.config import ApplicationConfiguration
-from file_watcher.file_watcher import File_watcher
 from user.user import User
-
+from file_traker.file_traker import File_traker
 
 import threading
 
@@ -14,16 +12,15 @@ def main():
     print("Loading log in menu...")
 
     print("Loading user...")
-    user_instance = User('asier')
-    print(f"User loaded: {user_instance.config.USERNAME}")
+    user = User('asier')
+    print(f"User loaded: {user.config.USERNAME}")
 
-    print("Wahtchdog Loading...")
-    for path in user_instance.config.LOCAL_STORAGE_PATH_LIST:
-        print(f"Watching path: {path}")
-        file_watcher = File_watcher(path)
-        file_watcher_thread = threading.Thread(target=file_watcher, args=(path,))
-        file_watcher_thread.start()
-    print("Watchdog threads started.")
+    print("Starting File Traker...")
+    file_traker = File_traker(user)
+    for path in user.config.LOCAL_STORAGE_PATH_LIST:
+        file_traker.add_path_to_watch(path)
+    print("Starting to Watch...")
+    file_traker.run_all()
 
     print("Local Sync Client is working...")
 

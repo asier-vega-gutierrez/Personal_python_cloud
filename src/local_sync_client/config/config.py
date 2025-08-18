@@ -15,9 +15,10 @@ class ApplicationConfiguration(metaclass=SingletonMeta):
     def __init__(self, username:str):
 
         # APPLICATION CONFIGURATION
-        self.USER_CONFIG_FILE = '/home/asier/Personal_cloud/src/local_sync_client/config/config.yaml'
+        self.APP_CONFIG_FILE_PATH = '/home/asier/Personal_cloud/config/config.yaml'
+        self.APP_TRAKER_DB_FILE_PATH = './file_traker/traker_db/tracker.db'
 
-        self.reader = YamlReader(self.USER_CONFIG_FILE)
+        self.reader = YamlReader(self.APP_CONFIG_FILE_PATH)
         self.config = self.reader.get_config_username('asier') 
 
         # USER CONFIG 
