@@ -1,22 +1,17 @@
 import sqlite3
 from pathlib import Path
 from datetime import datetime
-from typing import List
+import time
+import threading
+import os 
 
 from user.user import User
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
-import time
-import threading
+from utils.singelton import SingletonMeta
 
 
-class SingletonMeta(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+
 
 class File_traker(metaclass=SingletonMeta):
     
@@ -48,37 +43,61 @@ class File_traker(metaclass=SingletonMeta):
         conn.commit()
         conn.close()
 
-    def update_file_record(self, filepath):
+    def insert_replace_file_record(self, filepath):
         conn = sqlite3.connect(self.user.config.APP_TRAKER_DB_FILE_PATH)
         c = conn.cursor()
         mod_time = datetime.fromtimestamp(Path(filepath).stat().st_mtime).isoformat()
-        print('''INSERT OR REPLACE INTO tracked_files 
-            (path, last_modified) 
-            VALUES (?, ?)''', (str(filepath), mod_time))
         c.execute('''INSERT OR REPLACE INTO tracked_files 
                     (path, last_modified) 
                     VALUES (?, ?)''', (str(filepath), mod_time))
-
+        print(f"Inserted to db: {filepath}")
+        conn.commit()
+        conn.close()
+    
+    def delete_file_record(self, filepath):
+        conn = sqlite3.connect(self.user.config.APP_TRAKER_DB_FILE_PATH)
+        c = conn.cursor()
+        c.execute('''DELETE FROM tracked_files 
+                    WHERE path = ?''', (str(filepath),))
+        if c.rowcount > 0:
+            print(f"Deleted from db: {filepath}")
+        else:
+            print(f"No record found for: {filepath}")
         conn.commit()
         conn.close()
 
-# TODO Configurable whatch dog events
+# file events detector for File Watchers
 class Whatchdog_event_handler(FileSystemEventHandler):
 
     def __init__(self, traker:File_traker):
         super().__init__()
         self._traker = traker
 
-    # def on_created(self, event: FileSystemEvent) -> None:
-    #     print(event)
-
+    # Detect modifi event only files
     def on_modified(self, event: FileSystemEvent) -> None:
-        print(event)
-        if (event.event_type == 'modified' and event.is_directory == False):
-            self._traker.update_file_record(event.src_path)
+        if (event.is_directory == False):
+            print(event)
+            self._traker.insert_replace_file_record(event.src_path)
 
-    # def delete(self, event: FileSystemEvent) -> None:
-    #     print(event)
+    # Detect delete events only files
+    def on_deleted(self, event: FileSystemEvent) -> None:
+        if (event.is_directory == False):
+            print(event)
+            self._traker.delete_file_record(event.src_path)
+    
+    # Detect rename events (move are detected with on_deleted and on_creted)
+    def on_moved(self, event: FileSystemEvent) -> None:
+        if (event.is_directory == False):
+            print(event)
+            self._traker.insert_replace_file_record(event.dest_path)
+            self._traker.delete_file_record(event.src_path)
+    
+    # Detect create events, if the file has 0 bits is not traked 
+    def on_created(self, event: FileSystemEvent):
+        if (event.is_directory == False):
+            if(os.path.getsize(event.src_path) > 0):
+                print(event)
+                self._traker.insert_replace_file_record(event.src_path)
 
 
 # This is the file watcher class that will be used to watch the file system
@@ -97,6 +116,7 @@ class File_watcher:
         observer.schedule(self.event_handler, self.path, recursive=True)
         observer.start()
 
+        # TODO improve execution
         try:
             while True:
                 time.sleep(1)

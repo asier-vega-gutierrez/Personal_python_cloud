@@ -21,6 +21,7 @@ def main():
         file_traker.add_path_to_watch(path)
     print("Starting to Watch...")
     file_traker.run_all()
+    print("Whatching user file routes")
 
     print("Local Sync Client is working...")
 
