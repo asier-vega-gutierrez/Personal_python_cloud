@@ -18,16 +18,17 @@ from utils.logger import Logger
 # manage the execution by threading
 class File_traker(metaclass=SingletonMeta):
     
-    def __init__(self, user: User):
-        self.user = user
+    def __init__(self, db_path):
         self.file_watchers = []
         self.file_watchers_thread = []
+        self.db_path = db_path
         self._logger = Logger()
         self._init_db()
 
     # Method to add path, this add file_wather objetc to the list of file_watchers of file_traker
-    def add_path_to_watch(self, path):
-        self.file_watchers.append(File_watcher(path = path, event_handler = Whatchdog_event_handler(self)))
+    def add_paths_to_watch(self, paths):
+        for path  in paths:
+            self.file_watchers.append(File_watcher(path = path, event_handler = Whatchdog_event_handler(self)))
     
     # Method to run all the whatcher, each one on a thread
     def run_all(self):
@@ -47,20 +48,20 @@ class File_traker(metaclass=SingletonMeta):
         
     # Bb generation method, only generated if not present 
     def _init_db(self):
-        conn = sqlite3.connect(self.user.config.APP_TRAKER_DB_FILE_PATH)
+        conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS tracked_files
                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
                     path TEXT UNIQUE,
                     last_modified TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
-        self._logger.print(f"Inited db on {self.user.config.APP_TRAKER_DB_FILE_PATH}")
+        self._logger.print(f"Inited db on {self.db_path}")
         conn.commit()
         conn.close()
 
     # Inserts or replace in the db a route
     def insert_replace_file_record(self, filepath):
-        conn = sqlite3.connect(self.user.config.APP_TRAKER_DB_FILE_PATH)
+        conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         mod_time = datetime.fromtimestamp(Path(filepath).stat().st_mtime).isoformat()
         c.execute('''INSERT OR REPLACE INTO tracked_files 
@@ -72,7 +73,7 @@ class File_traker(metaclass=SingletonMeta):
     
     # Delete a route from the db
     def delete_file_record(self, filepath):
-        conn = sqlite3.connect(self.user.config.APP_TRAKER_DB_FILE_PATH)
+        conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         c.execute('''DELETE FROM tracked_files 
                     WHERE path = ?''', (str(filepath),))
@@ -100,13 +101,13 @@ class Whatchdog_event_handler(FileSystemEventHandler):
     # Detect delete events only files
     def on_deleted(self, event: FileSystemEvent) -> None:
         if (event.is_directory == False):
-            self._loggerprint(event)
+            self._logger.print(event)
             self._traker.delete_file_record(event.src_path)
     
     # Detect rename events (move are detected with on_deleted and on_creted)
     def on_moved(self, event: FileSystemEvent) -> None:
         if (event.is_directory == False):
-            self._loggerprint(event)
+            self._logger.print(event)
             self._traker.insert_replace_file_record(event.dest_path)
             self._traker.delete_file_record(event.src_path)
     
@@ -114,7 +115,7 @@ class Whatchdog_event_handler(FileSystemEventHandler):
     def on_created(self, event: FileSystemEvent):
         if (event.is_directory == False):
             if(os.path.getsize(event.src_path) > 0):
-                self._loggerprint(event)
+                self._logger.print(event)
                 self._traker.insert_replace_file_record(event.src_path)
 
 

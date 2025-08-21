@@ -19,10 +19,10 @@ def main():
     logger.print(f"User loaded: {user.config.USERNAME}")
 
     logger.print("Starting File Traker...")
-    file_traker = File_traker(user)
-    for path in user.config.LOCAL_STORAGE_PATH_LIST:
-        file_traker.add_path_to_watch(path)
-    logger.print("Starting to Watch...")
+    file_traker = File_traker(db_path = user.config.APP_TRAKER_DB_FILE_PATH)
+    logger.print("Adding path to watch...")
+    file_traker.add_paths_to_watch(user.config.LOCAL_STORAGE_PATH_LIST)
+    logger.print("Starting to watch...")
     file_traker.run_all()
     logger.print("Whatching user file routes")
 
