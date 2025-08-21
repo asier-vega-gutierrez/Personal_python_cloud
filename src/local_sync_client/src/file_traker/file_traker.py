@@ -22,7 +22,7 @@ class File_traker(metaclass=SingletonMeta):
         self.user = user
         self.file_watchers = []
         self.file_watchers_thread = []
-        self.logger = Logger()
+        self._logger = Logger()
         self._init_db()
 
     # Method to add path, this add file_wather objetc to the list of file_watchers of file_traker
@@ -36,15 +36,14 @@ class File_traker(metaclass=SingletonMeta):
         for thread in self.file_watchers_thread:
             thread.start()
     
-    # def stop_all(self):
-    #     for watcher in self.file_watchers:
-    #         watcher.stop()
-    #     for thread in self.file_watchers_thread:
-    #         thread.join(timeout=2.0) 
-    #     self.file_watchers_thread.clear()
+    # Method to stop all the file watchers and its thread
+    def stop_all(self):
+        for watcher in self.file_watchers:
+            watcher.stop()
+        for thread in self.file_watchers_thread:
+            thread.join() 
+        self.file_watchers_thread.clear()
 
-        
-     
         
     # Bb generation method, only generated if not present 
     def _init_db(self):
@@ -55,7 +54,7 @@ class File_traker(metaclass=SingletonMeta):
                     path TEXT UNIQUE,
                     last_modified TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
-        self.logger.print(f"Inited db on {self.user.config.APP_TRAKER_DB_FILE_PATH}")
+        self._logger.print(f"Inited db on {self.user.config.APP_TRAKER_DB_FILE_PATH}")
         conn.commit()
         conn.close()
 
@@ -67,7 +66,7 @@ class File_traker(metaclass=SingletonMeta):
         c.execute('''INSERT OR REPLACE INTO tracked_files 
                     (path, last_modified) 
                     VALUES (?, ?)''', (str(filepath), mod_time))
-        self.logger.print(f"Inserted to db: {filepath}")
+        self._logger.print(f"Inserted to db: {filepath}")
         conn.commit()
         conn.close()
     
@@ -78,9 +77,9 @@ class File_traker(metaclass=SingletonMeta):
         c.execute('''DELETE FROM tracked_files 
                     WHERE path = ?''', (str(filepath),))
         if c.rowcount > 0:
-            self.logger.print(f"Deleted from db: {filepath}")
+            self._logger.print(f"Deleted from db: {filepath}")
         else:
-            self.logger.print(f"No record found for: {filepath}")
+            self._logger.print(f"No record found for: {filepath}")
         conn.commit()
         conn.close()
 
@@ -90,23 +89,24 @@ class Whatchdog_event_handler(FileSystemEventHandler):
     def __init__(self, traker:File_traker):
         super().__init__()
         self._traker = traker
+        self._logger = Logger()
 
     # Detect modifi event only files
     def on_modified(self, event: FileSystemEvent) -> None:
         if (event.is_directory == False):
-            print(event)
+            self._logger.print(event)
             self._traker.insert_replace_file_record(event.src_path)
 
     # Detect delete events only files
     def on_deleted(self, event: FileSystemEvent) -> None:
         if (event.is_directory == False):
-            print(event)
+            self._loggerprint(event)
             self._traker.delete_file_record(event.src_path)
     
     # Detect rename events (move are detected with on_deleted and on_creted)
     def on_moved(self, event: FileSystemEvent) -> None:
         if (event.is_directory == False):
-            print(event)
+            self._loggerprint(event)
             self._traker.insert_replace_file_record(event.dest_path)
             self._traker.delete_file_record(event.src_path)
     
@@ -114,7 +114,7 @@ class Whatchdog_event_handler(FileSystemEventHandler):
     def on_created(self, event: FileSystemEvent):
         if (event.is_directory == False):
             if(os.path.getsize(event.src_path) > 0):
-                print(event)
+                self._loggerprint(event)
                 self._traker.insert_replace_file_record(event.src_path)
 
 
@@ -137,10 +137,8 @@ class File_watcher:
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
         self.running = True
-
-        try:
-            while self.running:
-                time.sleep(0.5)
-        finally:
-            self.observer.stop()
-            self.observer.join(timeout=1.0)
+    
+    # Stop method
+    def stop(self):
+        self.observer.stop()
+        self.running = False

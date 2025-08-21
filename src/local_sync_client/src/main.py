@@ -28,15 +28,15 @@ def main():
 
     logger.print("Local Sync Client is working...")
 
-    # try:
-    #     while True:
-    #         time.sleep(1)
-    # except KeyboardInterrupt:
-    #     logger.print("Received shutdown signal. Exiting...")
-    # finally:
-    #     logger.print("Stopping file tracker...")
-    #     #file_traker.stop_all()
-    #     logger.print("Local Sync Client stopped.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logger.print("Received shutdown signal. Exiting...")
+    finally:
+        logger.print("Stopping file tracker...")
+        file_traker.stop_all()
+        logger.print("Local Sync Client stopped.")
 
 
 if __name__ == "__main__":
