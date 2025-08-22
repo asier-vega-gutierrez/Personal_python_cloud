@@ -1,8 +1,7 @@
 
 from user.user import User
-from file_traker.file_traker import File_traker
+from file_traker.file_tracker import File_traker
 from utils.logger import Logger
-from utils.signal_handler import Signalhandler
 
 import  time
 import signal
