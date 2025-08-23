@@ -13,30 +13,46 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 config = ApplicationConfiguration('asier')
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload_local', methods=['POST'])
 def upload():
 
     if request.method == 'POST':
 
         file = request.files['file']
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], "asier_received.db"))
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], "asier_local.db"))
 
         return f"File {file.filename} uploaded successfully \n", 200
 
+
+@app.route('/upload_cloud', methods=['POST'])
+def upload():
+
+    if request.method == 'POST':
+
+        file = request.files['file']
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], "asier_cloud.db"))
+
+        return f"File {file.filename} uploaded successfully \n", 200
+
+# Call this method to compare the two actual dbs (must be uploaded firts)
 @app.route('/compare', methods=['GET'])
 def compare():
 
     if request.method == 'GET':
         
-        received_db = Sqlite(config.APP_RECEIVED_DB_PATH)
-        stored_db = Sqlite(config.APP_STORED_DB_PATH)
+        # Read the bd information
+        local_db = Sqlite(config.APP_RECEIVED_DB_PATH)
+        cloud_db = Sqlite(config.APP_STORED_DB_PATH)
 
-        ids_to_uploada = pd.DataFrame(data = (set(received_db.data[0].values) - set(stored_db.data[0].values)) ) 
+        # Compare the ids to find diferences
+        ids_to_uploada = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values)) ) 
         #print(ids_to_uploada)
 
+        # Save the response
         with open("output/ids.json", "w+") as json_file:
             json.dump(ids_to_uploada.to_json(), json_file)
         
+        # Send the respose back
         return jsonify(ids_to_uploada.to_json()), 200
 
 
