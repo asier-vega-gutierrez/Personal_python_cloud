@@ -19,8 +19,6 @@ class Sqlite():
         rows = c.fetchall()
         df = pd.DataFrame(data=rows)
         conn.close()
-
-        print(df)
         return df
         
 
