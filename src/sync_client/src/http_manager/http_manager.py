@@ -1,16 +1,25 @@
 import requests 
 import pandas as pd
-import json
+from utils.logger import Logger
 
+# Class that mannged all the http traffic of the sync_client
 class Http_manager():
 
     def __init__(self):
-        pass
+        self.type = "local"
+        self.logger = Logger()
 
-    def request_ids(self, username):
-        request = requests.get(f'http://localhost:5000/compare?username={username}')
-        data = request.json()
-        return pd.DataFrame(eval(data))
+    # Execute get to the compare_bd api
+    def get_ids(self, url, username):
+        response = requests.get(f'{url}compare?username={username}')
+        if (response.status_code == 200):
+            self.logger.print("HTTP Sucessful get")
+            data = response.json()
+            return pd.DataFrame(eval(data))
 
-    def post_db(self, db_path):
-        pass
+    # Execute post to the compare_db api
+    def post_db(self, url, db_path, username):
+        db_file = {"file": open(db_path, "rb")}
+        response = requests.post(f'{url}upload?type={self.type}&username={username}', files=db_file)
+        if (response.status_code == 200):
+            self.logger.print("HTTP Sucessful post")    

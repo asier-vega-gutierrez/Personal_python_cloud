@@ -26,17 +26,18 @@ def main():
     file_traker.run_all()
     logger.print("Whatching user file routes")
 
-    file_uploader = File_uploader(user.config.USERNAME)
-    file_uploader.run()
+    logger.print("Starting File Uploader...")
+    file_uploader = File_uploader()
+    logger.print("File upload is available")
 
     logger.print("Local Sync Client is working...")
 
     try:
         while True:
-            # cada minuto se relaiza una llamada para comparar las bases de datos
-            # se descarga los cmabio
-            # se suben los archivos a la nube
-            time.sleep(60)
+            file_uploader.run()
+            # comparar comapra y avisa al file uploader de nuevo
+            # file uploader sube
+            time.sleep(10)
     except KeyboardInterrupt:
         logger.print("Received shutdown signal. Exiting...")
     finally:
