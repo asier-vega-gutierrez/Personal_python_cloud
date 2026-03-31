@@ -5,12 +5,12 @@ local_sync_client:
       email: "asier@email.com"
       key_location: "/path/to/key"
       local_sotorage_paths:
-        - "/home/asier/Personal_cloud/local_storage_1"
-        - "/home/asier/Personal_cloud/local_storage_2"
+        - "/home/asier/proyect/Personal_python_cloud/local_storage_1"
+        - "/home/asier/proyect/Personal_python_cloud/local_storage_2"
 
     - username: "asier2"
       email: "asier@email.com"
       key_location: "/path/to/key"
       local_sotorage_paths:
-        - "/home/asier/Personal_cloud/local_storage_1"
-        - "/home/asier/Personal_cloud/local_storage_2"
+        - "/home/asier/proyect/Personal_python_cloud/local_storage_1"
+        - "/home/asier/proyect/Personal_python_cloud/local_storage_2"

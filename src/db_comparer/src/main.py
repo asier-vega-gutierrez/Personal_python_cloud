@@ -47,7 +47,10 @@ def compare():
             cloud_db = Sqlite(config.APP_STORED_DB_PATH)
 
             # Compare the ids to find diferences
-            ids_to_uploada = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values)) ) 
+            if(cloud_db.data.empty):
+                ids_to_uploada = pd.DataFrame(data = set(local_db.data[0].values))
+            else:
+                ids_to_uploada = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
             #print(ids_to_uploada)
 
             # Save the response
@@ -65,7 +68,7 @@ def compare():
 #curl -X GET http://localhost:5000/compare?username=asier
 
 # Test POST request with file
-#curl -X POST -F "file=@/home/asier/Personal_cloud/src/sync_client/db/tracker.db" "http://localhost:5000/upload?type=local&username=asier"
+#curl -X POST -F "file=@/home/asier/Personal_python_cloud/src/sync_client/db/tracker.db" "http://localhost:5000/upload?type=local&username=asier"
 
 
 if __name__ == "__main__":

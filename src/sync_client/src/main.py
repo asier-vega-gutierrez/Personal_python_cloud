@@ -35,7 +35,7 @@ def main():
     try:
         while True:
             file_uploader.run()
-            # comparar comapra y avisa al file uploader de nuevo
+            # comparar comapara y avisa al file uploader de nuevo
             # file uploader sube
             time.sleep(10)
     except KeyboardInterrupt:

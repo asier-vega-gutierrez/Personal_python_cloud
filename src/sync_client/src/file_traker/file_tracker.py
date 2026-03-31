@@ -25,7 +25,7 @@ class File_traker(metaclass=SingletonMeta):
         self._logger = Logger()
         self._init_db()
 
-    # Method to add path, this add file_wather objetc to the list of file_watchers of file_traker
+    # Method to add path, this add file_wather object to the list of file_watchers of file_traker
     def add_paths_to_watch(self, paths):
         for path  in paths:
             self.file_watchers.append(File_watcher(path = path, event_handler = Whatchdog_event_handler(self)))
