@@ -16,7 +16,7 @@ class File_uploader(metaclass=SingletonMeta):
         self.config = ApplicationConfiguration()
         self.file_uploader_thread = None
         self.running = False
-        self.last_request_dt = None 
+        self.last_request_dt_ids = None 
         self.http_manager = Http_manager()
         
 
@@ -29,7 +29,10 @@ class File_uploader(metaclass=SingletonMeta):
     # Executen the request via htt_manager
     def _post_get_runtine(self):
         self.http_manager.post_db(self.config.APP_COMPARE_BD_URL, self.config.APP_TRAKER_DB_FILE_PATH, self.config.USERNAME)
-        self.last_request_dt = self.http_manager.get_ids(self.config.APP_COMPARE_BD_URL, self.config.USERNAME)
+        self.last_request_dt_ids = self.http_manager.get_ids(self.config.APP_COMPARE_BD_URL, self.config.USERNAME)
+        print(self.last_request_dt_ids)
+        if(self.last_request_dt_ids.empty == False):
+            self._upload_files()
 
     # Stops the backgroun task
     def stop(self):
@@ -37,7 +40,7 @@ class File_uploader(metaclass=SingletonMeta):
         if self.file_uploader_thread:
             self.file_uploader_thread.join()
 
-    def upload_files():
+    def _upload_files(self):
         pass
 
     

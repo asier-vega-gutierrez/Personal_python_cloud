@@ -48,17 +48,17 @@ def compare():
 
             # Compare the ids to find diferences
             if(cloud_db.data.empty):
-                ids_to_uploada = pd.DataFrame(data = set(local_db.data[0].values))
+                ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
             else:
-                ids_to_uploada = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
+                ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
             #print(ids_to_uploada)
 
             # Save the response
             with open("output/ids.json", "w+") as json_file:
-                json.dump(ids_to_uploada.to_json(), json_file)
+                json.dump(ids_to_upload.to_json(), json_file)
             
             # Send the respose back
-            return jsonify(ids_to_uploada.to_json()), 200
+            return jsonify(ids_to_upload.to_json()), 200
         else:
             return "No username provided", 400
 

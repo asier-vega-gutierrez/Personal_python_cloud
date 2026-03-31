@@ -34,9 +34,9 @@ def main():
 
     try:
         while True:
+
             file_uploader.run()
-            # comparar comapara y avisa al file uploader de nuevo
-            # file uploader sube
+
             time.sleep(10)
     except KeyboardInterrupt:
         logger.print("Received shutdown signal. Exiting...")
