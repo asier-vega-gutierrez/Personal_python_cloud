@@ -12,7 +12,7 @@ class ApplicationConfiguration(metaclass=SingletonMeta):
         self.APP_COMPARE_BD_URL = "http://localhost:5000/"
 
         self.reader = YamlReader(self.APP_CONFIG_FILE_PATH)
-        self.config = self.reader.get_config_username('asier') 
+        self.config = self.reader.get_config_username(username) 
 
         # USER CONFIG 
         self.USERNAME = self.config['username']
