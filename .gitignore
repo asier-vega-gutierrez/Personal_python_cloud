@@ -6,5 +6,7 @@ IaC/Terraform/.terraform
 IaC/Terraform/terraform.tfstate
 IaC/Terraform/terraform.tfstate.backup
 IaC/Terraform/.terraform.lock.hcl
+IaC/Terraform/.terraform.tfstate.lock.info
+src/upload_test/.env
 
 __pycache__

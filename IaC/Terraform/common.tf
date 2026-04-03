@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "~> 4.67.0"
     }
   }
 
@@ -36,15 +36,14 @@ resource "azurerm_storage_account" "cloud_sa" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "files_container" {
-  name                  = "files-container"
-  storage_account_name  = azurerm_storage_account.cloud_sa.name
+resource "azurerm_storage_container" "files_container_asier" {
+  name                  = "files-container-asier"
+  storage_account_id    = azurerm_storage_account.cloud_sa.id
   container_access_type = "private"
 }
 
-resource "azurerm_storage_blob" "blob_asier" {
-  name                   = "blob_asier"
-  storage_account_name   = azurerm_storage_account.cloud_sa.name
-  storage_container_name = azurerm_storage_container.files_container.name
-  type                   = "Block"
+resource "azurerm_storage_container" "files_container_asier2" {
+  name                  = "files-container-asier2"
+  storage_account_id    = azurerm_storage_account.cloud_sa.id
+  container_access_type = "private"
 }
