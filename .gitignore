@@ -1,5 +1,10 @@
 local_storage_1/
 local_storage_2/
 todo.md
+comandos.md
+IaC/Terraform/.terraform
+IaC/Terraform/terraform.tfstate
+IaC/Terraform/terraform.tfstate.backup
+IaC/Terraform/.terraform.lock.hcl
 
 __pycache__
