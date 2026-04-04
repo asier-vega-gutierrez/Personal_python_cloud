@@ -8,5 +8,6 @@ IaC/Terraform/terraform.tfstate.backup
 IaC/Terraform/.terraform.lock.hcl
 IaC/Terraform/.terraform.tfstate.lock.info
 src/upload_test/.env
+src/sync_client/src/.env
 
 __pycache__

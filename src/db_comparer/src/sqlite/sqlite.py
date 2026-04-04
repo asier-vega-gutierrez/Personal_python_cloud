@@ -9,7 +9,7 @@ class Sqlite():
     def __init__(self, db_path):
         self.db_path = db_path
         self._logger = Logger()
-        self._init_db()
+        self._init_db() # TODO HAY QUE IMPEDIR QUE CREE SIEMPRE LA DB COMPROBAR SI YA ESTA CERADA ANTES DE LLAMAR A ESTO
         self.data = self.generate_df()
 
     # Generates df with the ids of each db (local and cloud)
