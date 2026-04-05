@@ -46,7 +46,7 @@ class File_traker(metaclass=SingletonMeta):
         self.file_watchers_thread.clear()
 
         
-    # Bb generation method, only generated if not present 
+    # Bb generation method, only generated if not present TODO move this to sql file (crete it)
     def _init_db(self):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
@@ -59,7 +59,7 @@ class File_traker(metaclass=SingletonMeta):
         conn.commit()
         conn.close()
 
-    # Inserts or replace in the db a route
+    # Inserts or replace in the db a route TODO move this to sql file (crete it)
     def insert_replace_file_record(self, filepath):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
@@ -71,7 +71,7 @@ class File_traker(metaclass=SingletonMeta):
         conn.commit()
         conn.close()
     
-    # Delete a route from the db
+    # Delete a route from the db TODO move this to sql file (crete it)
     def delete_file_record(self, filepath):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()

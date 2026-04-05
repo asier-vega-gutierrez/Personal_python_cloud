@@ -37,7 +37,7 @@ def main():
 
             file_uploader.run()
 
-            time.sleep(10)
+            time.sleep(60)
     except KeyboardInterrupt:
         logger.print("Received shutdown signal. Exiting...")
     finally:
