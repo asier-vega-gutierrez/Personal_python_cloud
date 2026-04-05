@@ -46,7 +46,7 @@ class File_uploader(metaclass=SingletonMeta):
         if self.file_uploader_thread:
             self.file_uploader_thread.join()
 
-    # Executes the upload to azure blob of the corresponding files 
+    # Executes the upload to azure blob of the corresponding files TODO generate my own container if it doesn't exists for that username
     def _upload_files(self):
         # Set client to access azure storage container
         blob_service_client = BlobServiceClient.from_connection_string(self.config.APP_CONNECTION_STRING)
