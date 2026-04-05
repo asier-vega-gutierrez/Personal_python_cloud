@@ -2,3 +2,5 @@ pip install PyYAML
 pip install watchdog
 pip install pandas
 pip install requests
+pip install azure-storage-blob 
+pip install azure-identity

@@ -36,14 +36,14 @@ resource "azurerm_storage_account" "cloud_sa" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "files_container_asier" {
-  name                  = "files-container-asier"
+resource "azurerm_storage_container" "asier_container" {
+  name                  = "asier-container"
   storage_account_id    = azurerm_storage_account.cloud_sa.id
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "files_container_asier2" {
-  name                  = "files-container-asier2"
+resource "azurerm_storage_container" "asier2_container" {
+  name                  = "asier2-container"
   storage_account_id    = azurerm_storage_account.cloud_sa.id
   container_access_type = "private"
 }
