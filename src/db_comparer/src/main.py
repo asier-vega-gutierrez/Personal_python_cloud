@@ -15,9 +15,12 @@ def upload():
 
     if request.method == 'POST':
 
-        # Get the aeguments
+        # Get the arguments
         type = request.args.get('type')
         username = request.args.get('username')
+        print(username)
+
+        # Procesee the post
         if(username != ""):
             config = ApplicationConfiguration(username)
 
@@ -31,15 +34,18 @@ def upload():
         else:
             return "No username provided", 400
 
-# Call this method to compare the two actual dbs (must be uploaded firts)
+# Call this method to compare the two actual dbs (must be uploaded first)
 @app.route('/compare', methods=['GET'])
 def compare():
 
     if request.method == 'GET':
         
+        # Get the arguments
         username = request.args.get('username')
 
+        # Procesee the get
         if(username != ""):
+
             config = ApplicationConfiguration(username)
 
             # Read the bd information
@@ -51,14 +57,14 @@ def compare():
                 ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
             else:
                 ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
-            #print(ids_to_uploada)
 
             # Save the response
-            with open("output/ids.json", "w+") as json_file:
-                json.dump(ids_to_upload.to_json(), json_file)
+            # with open("output/ids.json", "w+") as json_file:
+            #     json.dump(ids_to_upload.to_json(), json_file)
             
             # Send the respose back
             return jsonify(ids_to_upload.to_json()), 200
+        
         else:
             return "No username provided", 400
 

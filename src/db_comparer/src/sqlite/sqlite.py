@@ -1,5 +1,6 @@
 import pandas as pd
 import sqlite3
+import os
 from utils.logger import Logger
 
 
@@ -25,18 +26,19 @@ class Sqlite():
         conn.close()
         return df
     
-    # Bb generation method, only generated if not present 
+    # Bb generation method, only generated if not find 
     def _init_db(self):
-        conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS tracked_files
-                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    path TEXT UNIQUE,
-                    last_modified TEXT,
-                    created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
-        self._logger.print(f"Inited db on {self.db_path}")
-        conn.commit()
-        conn.close()
+        if os.path.exists(self.db_path) == False:
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            c.execute('''CREATE TABLE IF NOT EXISTS tracked_files
+                        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        path TEXT UNIQUE,
+                        last_modified TEXT,
+                        created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
+            self._logger.print(f"Inited db on {self.db_path}")
+            conn.commit()
+            conn.close()
         
 
     
