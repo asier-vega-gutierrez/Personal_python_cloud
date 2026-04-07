@@ -36,20 +36,3 @@ resource "azurerm_storage_account" "cloud_sa" {
   account_replication_type = "LRS"
 }
 
-module "container_generator" {
-  source = "./container_generator"
-  storage_account_id = azurerm_storage_account.cloud_sa.id
-  config_container_name = var.config_container_name
-}
-
-# resource "azurerm_storage_container" "asier_container" {
-#   name                  = "asier-container"
-#   storage_account_id    = azurerm_storage_account.cloud_sa.id
-#   container_access_type = "private"
-# }
-
-# resource "azurerm_storage_container" "asier2_container" {
-#   name                  = "asier2-container"
-#   storage_account_id    = azurerm_storage_account.cloud_sa.id
-#   container_access_type = "private"
-# }

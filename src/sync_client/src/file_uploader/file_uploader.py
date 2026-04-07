@@ -3,9 +3,10 @@ import time
 import pandas as pd
 import os
 import sqlite3
+import asyncio
 from http_manager.http_manager import Http_manager
-from azure.storage.blob import BlobServiceClient
-from azure.core.exceptions import ResourceExistsError
+from azure.storage.blob import BlobServiceClient, ContainerClient
+from azure.core.exceptions import ResourceExistsError, ResourceNotFoundError
 
 from utils.singelton import SingletonMeta
 from utils.logger import Logger
@@ -24,6 +25,7 @@ class File_uploader(metaclass=SingletonMeta):
         self.last_request_dt_ids = None 
         self.http_manager = Http_manager()
         self._logger = Logger()
+        self.container_checked = False
         
 
     # Calling this executes a bakcgroud task that get the db diference id from the compare_bd api
@@ -50,6 +52,9 @@ class File_uploader(metaclass=SingletonMeta):
     def _upload_files(self):
         # Set client to access azure storage container
         blob_service_client = BlobServiceClient.from_connection_string(self.config.APP_CONNECTION_STRING)
+        # Check continer if it exist, if no it creates one
+        if not self.container_checked:
+            self._check_container(blob_service_client)
         # Get the container client 
         container_client = blob_service_client.get_container_client(container=self.config.CONTAINER_NAME)
         # Get filepaths
@@ -62,7 +67,7 @@ class File_uploader(metaclass=SingletonMeta):
                 try:
                     container_client.upload_blob(name=str(file_path).strip("/"), data=data)
                     self._logger.print(f"Data have been sent to cloud")
-                except ResourceExistsError:
+                except ResourceExistsError, ResourceNotFoundError:
                     pass
 
     # Gets the actual files paths of the files that ahs to be uploadad TODO move this to sql file (crete it)
@@ -79,3 +84,13 @@ class File_uploader(metaclass=SingletonMeta):
         dt = pd.read_sql_query(query, conn, params=ids_list)
         conn.close()
         return dt
+
+    # Check continer if it exist, if no it creates one 
+    # (is async because if he can't upload the exceptioon is handled so it waits for next time to upload)
+    async def _check_container(self, blob_service_client: BlobServiceClient):
+        self.container_checked = True
+        container_client = blob_service_client.get_container_client(self.config.CONTAINER_NAME)
+        if not await container_client.exists():
+            await blob_service_client.create_container(name=self.config.CONTAINER_NAME)
+            self._logger.print(f"Container has been created")
+            
