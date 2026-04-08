@@ -25,7 +25,6 @@ class File_uploader(metaclass=SingletonMeta):
         self.last_request_dt_ids = None 
         self.http_manager = Http_manager()
         self._logger = Logger()
-        self.container_checked = False
         
 
     # Calling this executes a bakcgroud task that get the db diference id from the compare_bd api
@@ -53,8 +52,7 @@ class File_uploader(metaclass=SingletonMeta):
         # Set client to access azure storage container
         blob_service_client = BlobServiceClient.from_connection_string(self.config.APP_CONNECTION_STRING)
         # Check continer if it exist, if no it creates one
-        if not self.container_checked:
-            self._check_container(blob_service_client)
+        self._check_container(blob_service_client)
         # Get the container client 
         container_client = blob_service_client.get_container_client(container=self.config.CONTAINER_NAME)
         # Get filepaths
@@ -87,10 +85,14 @@ class File_uploader(metaclass=SingletonMeta):
 
     # Check continer if it exist, if no it creates one 
     # (is async because if he can't upload the exceptioon is handled so it waits for next time to upload)
-    async def _check_container(self, blob_service_client: BlobServiceClient):
-        self.container_checked = True
+    def _check_container(self, blob_service_client: BlobServiceClient):
+        # Get the continer 
         container_client = blob_service_client.get_container_client(self.config.CONTAINER_NAME)
-        if not await container_client.exists():
-            await blob_service_client.create_container(name=self.config.CONTAINER_NAME)
-            self._logger.print(f"Container has been created")
-            
+        # If it doesn't exist create a new one
+        if not container_client.exists():
+            try:
+                blob_service_client.create_container(name=self.config.CONTAINER_NAME)
+                self._logger.print(f"Container has been created")
+            except ResourceExistsError:
+                # This is mannaged becuase if the resource is being deleted this error appearece
+                pass
