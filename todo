@@ -1,5 +1,4 @@
 sync_client: move sql part to sql_mannage new class
 sync_client: time triger http post get
 sync_client: new connection to blob this one doesn't work properly
-sync_client + terrafrom: generate new container if username hasn't one
 db_comparer: move it to cloud (azure function)

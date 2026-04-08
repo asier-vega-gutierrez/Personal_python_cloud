@@ -20,19 +20,18 @@ resource "azurerm_resource_group" "cloud_rg" {
   location = "West Europe"
 }
 
-# Generate a random string
-resource "random_string" "random" {
-  length  = 6
-  upper   = false
-  special = false
+# Modules
+module "storage" {
+  source = "./storage"
+  resource_group_name   = azurerm_resource_group.cloud_rg.name
+  resource_group_location = azurerm_resource_group.cloud_rg.location
 }
 
-# Storage account for all the files an dbs
-resource "azurerm_storage_account" "cloud_sa" {
-  name                     = "stor${random_string.random.id}"
-  resource_group_name      = azurerm_resource_group.cloud_rg.name
-  location                 = azurerm_resource_group.cloud_rg.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+module "function" {
+  source = "./function"
+  resource_group_name   = azurerm_resource_group.cloud_rg.name
+  resource_group_location = azurerm_resource_group.cloud_rg.location
 }
+
+
 
