@@ -7,3 +7,5 @@ cd Personal_python_cloud/src/sync_client/
 cd Personal_python_cloud/IaC/Terraform/
 terraform apply -auto-approve
 terraform apply -auto-approve -target=module.container_generator -var config_container_name=asier-container
+
+https://www.youtube.com/watch?v=ldFJBzSH5cM
