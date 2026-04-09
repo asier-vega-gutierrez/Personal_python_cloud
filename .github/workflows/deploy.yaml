@@ -2,6 +2,7 @@ name: Deploy Python project to Azure Function App
 
 on:
   pull_request:
+  workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'dbcomparer-function'   # set this to your function app name on Azure
