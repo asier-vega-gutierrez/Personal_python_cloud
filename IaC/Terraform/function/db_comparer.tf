@@ -26,7 +26,7 @@ resource "azurerm_linux_function_app" "db_comparer_function" {
 
   site_config {
     application_stack {
-      python_version = "3.14"
+      python_version = "3.12"
     }
   }
 }

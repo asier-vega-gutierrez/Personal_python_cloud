@@ -9,3 +9,5 @@ terraform apply -auto-approve
 terraform apply -auto-approve -target=module.container_generator -var config_container_name=asier-container
 
 https://www.youtube.com/watch?v=ldFJBzSH5cM
+
+https://dbcomparer-function.scm.azurewebsites.net/api/settings

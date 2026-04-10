@@ -72,3 +72,15 @@ def compare():
         
         else:
             return "No username provided", 400
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
+
+# Test GET request
+#curl -X GET http://localhost:5000/compare?username=asier
+
+# Test POST request with file
+#curl -X POST -F "file=@/home/asier/Personal_python_cloud/src/sync_client/db/tracker.db" "http://localhost:5000/upload?type=local&username=asier"
