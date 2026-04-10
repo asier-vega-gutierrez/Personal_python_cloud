@@ -7,16 +7,16 @@ import json
 import os
 from flask import Flask, jsonify, request
 
-# Azure code 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
-def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
-    return func.WsgiMiddleware(app.wsgi_app).handle(req, context)
-
+#app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 
 # Flask code
 app = Flask(__name__)
+
+# Azure code 
+def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
+    return func.WsgiMiddleware(app.wsgi_app).handle(req, context)
+
 
 # Call this method to upload the db files
 @app.route('/upload', methods=['POST'])
@@ -75,7 +75,7 @@ def compare():
 
 
 # Test GET request
-#curl -X GET http://localhost:5000/compare?username=asier
+#curl -X GET http://dbcomparer-function.azurewebsites.net:5000/compare?username=asier
 
 # Test POST request with file
-#curl -X POST -F "file=@/home/asier/Personal_python_cloud/src/sync_client/db/tracker.db" "http://localhost:5000/upload?type=local&username=asier"
+#curl -X POST -F "file=@/home/asier/Personal_python_cloud/src/sync_client/db/tracker.db" "http://dbcomparer-function.azurewebsites.net:5000/upload?type=local&username=asier"
