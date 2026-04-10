@@ -3,4 +3,4 @@
 # azure-monitor-opentelemetry
 
 azure-functions
-flask
+flask==3.1.1
