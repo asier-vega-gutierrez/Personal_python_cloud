@@ -2,7 +2,7 @@ import azure.functions as func
 
 from config.config import ApplicationConfiguration
 from sqlite.sqlite import Sqlite
-#import pandas as pd
+import pandas as pd
 import json
 import os
 import logging
@@ -17,75 +17,61 @@ app = Flask(__name__)
 def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
     return func.WsgiMiddleware(app.wsgi_app).handle(req, context)
 
-@app.route("/")
-def index():
-    logging.info('Python HTTP trigger function processed a request.')
-    
-    referer = request.headers.get("Referer", "")
-    logging.info(f"got a referer: {referer}")
 
-    if referer.startswith("https://github.com"):
-        url_part = referer.split("https://github.com/")[-1]
-        vscode_redirect = f"https://vscode.dev/github/{url_part}"
-    else:
-        vscode_redirect = "https://vscode.dev/"
+# Call this method to upload the db files
+@app.route('/upload', methods=['POST'])
+def upload():
 
-    return redirect(vscode_redirect, code=302)
+    if request.method == 'POST':
 
-# # Call this method to upload the db files
-# @app.route('/upload', methods=['POST'])
-# def upload():
+        # Get the arguments
+        type = request.args.get('type')
+        username = request.args.get('username')
+        print(username)
 
-#     if request.method == 'POST':
+        # Procesee the post
+        if(username != ""):
+            config = ApplicationConfiguration(username)
 
-#         # Get the arguments
-#         type = request.args.get('type')
-#         username = request.args.get('username')
-#         print(username)
+            # Save the file as wanted name
+            file = request.files['file']
+            file.save(os.path.join(config.APP_UPLOAD_FOLDER, f"{username}_{type}.db"))
 
-#         # Procesee the post
-#         if(username != ""):
-#             config = ApplicationConfiguration(username)
-
-#             # Save the file as wanted name
-#             file = request.files['file']
-#             file.save(os.path.join(config.APP_UPLOAD_FOLDER, f"{username}_{type}.db"))
-
-#             # Send the respose back
-#             return f"File {file.filename} uploaded successfully \n", 200
+            # Send the respose back
+            return f"File {file.filename} uploaded successfully \n", 200
         
-#         else:
-#             return "No username provided", 400
+        else:
+            return "No username provided", 400
 
-# # Call this method to compare the two actual dbs (must be uploaded first)
-# @app.route('/compare', methods=['GET'])
-# def compare():
+# Call this method to compare the two actual dbs (must be uploaded first)
+@app.route('/compare', methods=['GET'])
+def compare():
 
-#     if request.method == 'GET':
+    if request.method == 'GET':
         
-#         # Get the arguments
-#         username = request.args.get('username')
+        # Get the arguments
+        username = request.args.get('username')
 
-#         # Procesee the get
-#         if(username != ""):
+        # Procesee the get
+        if(username != ""):
 
-#             config = ApplicationConfiguration(username)
+            config = ApplicationConfiguration(username)
 
-#             # Read the bd information
-#             local_db = Sqlite(config.APP_RECEIVED_DB_PATH)
-#             cloud_db = Sqlite(config.APP_STORED_DB_PATH)
+            # Read the bd information
+            local_db = Sqlite(config.APP_RECEIVED_DB_PATH)
+            cloud_db = Sqlite(config.APP_STORED_DB_PATH)
 
-#             # Compare the ids to find diferences
-#             if(cloud_db.data.empty):
-#                 ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
-#             else:
-#                 ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
+            # Compare the ids to find diferences
+            if(cloud_db.data.empty):
+                ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
+            else:
+                ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
 
-#             # Send the respose back
-#             return jsonify(ids_to_upload.to_json()), 200
+            # Send the respose back
+            return jsonify(ids_to_upload.to_json()), 200
         
-#         else:
-#             return "No username provided", 400
+        else:
+            return "No username provided", 400
 
 
 # Test GET request
