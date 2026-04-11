@@ -2,7 +2,7 @@ import azure.functions as func
 
 from config.config import ApplicationConfiguration
 from sqlite.sqlite import Sqlite
-import pandas as pd
+#import pandas as pd
 import json
 import os
 import logging
