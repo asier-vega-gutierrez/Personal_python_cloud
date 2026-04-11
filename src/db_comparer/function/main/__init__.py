@@ -5,13 +5,10 @@ from sqlite.sqlite import Sqlite
 import pandas as pd
 import json
 import os
-from flask import Flask, jsonify, request
+import logging
+from flask import Flask, jsonify, request, redirect
 
 #app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
-import logging
-from flask import Flask, request, redirect
-
 
 # Flask code
 app = Flask(__name__)
