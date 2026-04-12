@@ -6,7 +6,7 @@ import pandas as pd
 import json
 import os
 import logging
-from flask import Flask, jsonify, request, redirect
+from flask import Flask, jsonify, request, redirect, render_template_string
 
 #app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -16,6 +16,10 @@ app = Flask(__name__)
 # Azure code 
 def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
     return func.WsgiMiddleware(app.wsgi_app).handle(req, context)
+
+@app.route('/')
+def upload():
+    render_template_string('all ok')
 
 
 # Call this method to upload the db files
