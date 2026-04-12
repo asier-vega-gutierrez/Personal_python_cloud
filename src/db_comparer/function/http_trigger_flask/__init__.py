@@ -1,11 +1,11 @@
 import azure.functions as func
 import logging
-from flask import Flask, jsonify, request
 import os
 
-from config.config import ApplicationConfiguration
-from sqlite.sqlite import Sqlite
-import pandas as pd
+from flask import Flask, jsonify, request
+#from config.config import ApplicationConfiguration
+#from sqlite.sqlite import Sqlite
+#import pandas as pd
 
 
 app = Flask(
