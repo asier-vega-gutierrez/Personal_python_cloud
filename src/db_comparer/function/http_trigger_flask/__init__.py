@@ -3,7 +3,7 @@ import logging
 import os
 
 from flask import Flask, jsonify, request
-#from config.config import ApplicationConfiguration
+from config.config import ApplicationConfiguration
 #from sqlite.sqlite import Sqlite
 #import pandas as pd
 
