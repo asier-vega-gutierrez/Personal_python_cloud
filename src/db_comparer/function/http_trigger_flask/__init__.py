@@ -12,5 +12,5 @@ def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
 
 @app.route('/')
 def index():
-    return flask.render_template("choose.html")
+    return 'Hello from Azure Functions + Flask!'
 
