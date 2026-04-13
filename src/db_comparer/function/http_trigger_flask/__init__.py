@@ -15,64 +15,66 @@ app = Flask(
 def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
     return func.WsgiMiddleware(app.wsgi_app).handle(req, context)
 
+# Test call
 @app.route('/')
 def index():
-    return 'Hello from Azure Functions + Flask!'
+    return 'Hello from Azure Functions + Flask!', 200
 
-# @app.route('/upload', methods=['POST'])
-# def upload():
+# Call this method to upload the db files
+@app.route('/upload', methods=['POST'])
+def upload():
 
-#     if request.method == 'POST':
+    if request.method == 'POST':
 
-#         # Get the arguments
-#         type = request.args.get('type')
-#         username = request.args.get('username')
-#         print(username)
+        # Get the arguments
+        type = request.args.get('type')
+        username = request.args.get('username')
+        print(username)
 
-#         # Procesee the post
-#         if(username != ""):
-#             config = ApplicationConfiguration(username)
+        # Procesee the post
+        if(username != ""):
+            config = ApplicationConfiguration(username)
 
-#             # Save the file as wanted name
-#             file = request.files['file']
-#             file.save(os.path.join(config.APP_UPLOAD_FOLDER, f"{username}_{type}.db"))
+            # Save the file as wanted name
+            file = request.files['file']
+            file.save(os.path.join(config.APP_UPLOAD_FOLDER, f"{username}_{type}.db"))
 
-#             # Send the respose back
-#             return f"File {file.filename} uploaded successfully \n", 200
+            # Send the respose back
+            return f"File {file.filename} uploaded successfully \n", 200
         
-#         else:
-#             return "No username provided", 400
+        else:
+            return "No username provided", 400
 
-# # Call this method to compare the two actual dbs (must be uploaded first)
-# @app.route('/compare', methods=['GET'])
-# def compare():
+# Call this method to compare the two actual dbs (must be uploaded first)
+@app.route('/compare', methods=['GET'])
+def compare():
 
-#     if request.method == 'GET':
+    if request.method == 'GET':
         
-#         # Get the arguments
-#         username = request.args.get('username')
+        # Get the arguments
+        username = request.args.get('username')
 
-#         # Procesee the get
-#         if(username != ""):
+        # Procesee the get
+        if(username != ""):
 
-#             config = ApplicationConfiguration(username)
+            config = ApplicationConfiguration(username)
 
-#             # Read the bd information
-#             local_db = Sqlite(config.APP_RECEIVED_DB_PATH)
-#             cloud_db = Sqlite(config.APP_STORED_DB_PATH)
+            # Read the bd information
+            local_db = Sqlite(config.APP_RECEIVED_DB_PATH)
+            cloud_db = Sqlite(config.APP_STORED_DB_PATH)
 
-#             # Compare the ids to find diferences
-#             if(cloud_db.data.empty):
-#                 ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
-#             else:
-#                 ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
+            # Compare the ids to find diferences
+            if(cloud_db.data.empty):
+                ids_to_upload = pd.DataFrame(data = set(local_db.data[0].values))
+            else:
+                ids_to_upload = pd.DataFrame(data = (set(local_db.data[0].values) - set(cloud_db.data[0].values))) 
 
-#             # Save the response
-#             # with open("output/ids.json", "w+") as json_file:
-#             #     json.dump(ids_to_upload.to_json(), json_file)
+            # Save the response
+            # with open("output/ids.json", "w+") as json_file:
+            #     json.dump(ids_to_upload.to_json(), json_file)
             
-#             # Send the respose back
-#             return jsonify(ids_to_upload.to_json()), 200
+            # Send the respose back
+            return jsonify(ids_to_upload.to_json()), 200
         
-#         else:
-#             return "No username provided", 400
+        else:
+            return "No username provided", 400
