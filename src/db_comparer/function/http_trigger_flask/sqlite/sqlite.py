@@ -1,7 +1,7 @@
 import pandas as pd
 import sqlite3
 import os
-from utils.logger import Logger
+from ..utils.logger import Logger
 
 
 # Class to manage conection with the sqlite database

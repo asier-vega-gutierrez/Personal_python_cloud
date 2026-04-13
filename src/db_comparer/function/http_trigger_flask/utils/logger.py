@@ -1,5 +1,5 @@
 from datetime import datetime
-from utils.singelton import SingletonMeta
+from ..utils.singelton import SingletonMeta
 
 # Class to centralize login system with timestamp
 class Logger(metaclass=SingletonMeta):

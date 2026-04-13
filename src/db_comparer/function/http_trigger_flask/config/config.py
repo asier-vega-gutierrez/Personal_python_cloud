@@ -1,5 +1,5 @@
 import os
-from utils.singelton import SingletonMeta
+from ..utils.singelton import SingletonMeta
 
 class ApplicationConfiguration(metaclass=SingletonMeta):
     
