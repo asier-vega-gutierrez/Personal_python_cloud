@@ -5,3 +5,6 @@
 azure-functions
 flask==3.1.1
 pandas
+http_trigger_flask/config
+http_trigger_flask/sqlite
+http_trigger_flask/utils
