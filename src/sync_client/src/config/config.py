@@ -11,7 +11,7 @@ class ApplicationConfiguration(metaclass=SingletonMeta):
         load_dotenv()
         self.APP_CONFIG_FILE_PATH = './config/config.yaml'
         self.APP_TRAKER_DB_FILE_PATH = './db/tracker.db'
-        self.APP_COMPARE_BD_URL = "http://localhost:5000/"
+        self.APP_COMPARE_BD_URL = "dbcomparer-function.azurewebsites.net/" #"http://localhost:5000/"
         self.APP_CONNECTION_STRING = os.environ['AZURE_CONN_STRING']
 
         self.reader = YamlReader(self.APP_CONFIG_FILE_PATH)

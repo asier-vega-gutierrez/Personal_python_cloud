@@ -65,7 +65,7 @@ class File_uploader(metaclass=SingletonMeta):
                 try:
                     container_client.upload_blob(name=str(file_path).strip("/"), data=data)
                     self._logger.print(f"Data have been sent to cloud")
-                except ResourceExistsError, ResourceNotFoundError:
+                except (ResourceExistsError, ResourceNotFoundError):
                     pass
 
     # Gets the actual files paths of the files that ahs to be uploadad TODO move this to sql file (crete it)
